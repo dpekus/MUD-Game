@@ -59,6 +59,9 @@ public class MUDClient {
       System.out.println("Let's begin");
       running = true;
       currentLocation = serv.getStartLocation();
+
+      displayOptions();
+
       System.out.println(serv.createUser(playerName));
 
       runGame();
@@ -76,8 +79,6 @@ public class MUDClient {
 
     while (running) try {
 
-      //System.out.println("Which direction will you go?");
-
       System.out.print(">> ");
       String playerInput = in.readLine().toLowerCase();
       handlePlayerInput(playerInput);
@@ -90,6 +91,7 @@ public class MUDClient {
 
   // handle an input from the player
   private static void handlePlayerInput(String playerInput) throws RemoteException {
+
     // move the user in a given direction
     if (playerInput.contains("move")) {
       // get the direction where the player wants to move
@@ -132,10 +134,26 @@ public class MUDClient {
       }
     }
 
+    // print the available commands to the player
+    if (playerInput.contains("help")) {
+      displayOptions();
+    }
+
     // exit the game
     if (playerInput.contains("exit")) {
       serv.exit(playerName);
       running = false;
     }
+  }
+
+  private static void displayOptions() {
+    System.out.println();
+    System.out.println("You can choose from one of these commands:");
+    System.out.println();
+    System.out.println("* Move <direction>  - move to a selected direction (north, east, south, west)");
+    System.out.println("* Pick <item>  - pick up an item from the ground to your inventory");
+    System.out.println("* Drop <item>  - drop an item from your inventory to the ground");
+    System.out.println("* Help  - display the available commands");
+    System.out.println("* Exit  - exit the game");
   }
 }
