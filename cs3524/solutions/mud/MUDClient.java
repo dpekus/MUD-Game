@@ -17,6 +17,8 @@ public class MUDClient {
   private static String playerName = "";
   // specify whether the game is running or not
   private static boolean running = false;
+  // the name of the MUD that the player is currently on
+  private static String mudName = "";
 
   private static MUDServerInterface serv;
 
@@ -45,7 +47,6 @@ public class MUDClient {
       serv = (MUDServerInterface) Naming.lookup(regURL);
 
       // set up the game
-      // TBA: change all of this later
       System.out.println("Welcome!");
       System.out.println("What is your name?");
       try {
@@ -56,13 +57,24 @@ public class MUDClient {
         System.err.println(e.getMessage());
       }
       System.out.println("Nice to meet you, " + playerName);
+      System.out.println();
+
+      displayAvailableMUDs();
+
+      System.out.println("Which MUD would you like to join?");
+      System.out.println();
+      System.out.print(">> ");
+      mudName = in.readLine();
+
+      joinMUD(mudName);
+
+      System.out.println();
       System.out.println("Let's begin");
       running = true;
       currentLocation = serv.getStartLocation();
 
-      displayOptions();
 
-      System.out.println(serv.createUser(playerName));
+      displayOptions();
 
       runGame();
 
@@ -144,6 +156,11 @@ public class MUDClient {
       serv.exit(playerName);
       running = false;
     }
+
+    // display all available MUDs
+    if (playerInput.contains("muds")) {
+      displayAvailableMUDs();
+    }
   }
 
   private static void displayOptions() {
@@ -154,6 +171,17 @@ public class MUDClient {
     System.out.println("* Pick <item>  - pick up an item from the ground to your inventory");
     System.out.println("* Drop <item>  - drop an item from your inventory to the ground");
     System.out.println("* Help  - display the available commands");
+    System.out.println("* Muds  - display all currently available MUDs");
     System.out.println("* Exit  - exit the game");
+  }
+
+  private static void displayAvailableMUDs() throws RemoteException {
+    System.out.println("Currently, these MUDs are available: ");
+    System.out.println();
+    System.out.println(serv.getAvailableMUDs());
+  }
+
+  private static void joinMUD(String mudName) throws RemoteException {
+    serv.createUser(playerName, mudName);
   }
 }
