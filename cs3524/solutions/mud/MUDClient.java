@@ -131,7 +131,6 @@ public class MUDClient {
     if (playerInput.contains("drop")) {
       // get the name of the item that the player wants to drop
       String[] itemString = playerInput.split(" ");
-      //drop the item and notify the user about it
       serv.dropItem(currentLocation, itemString[1]);
       inventory.remove(itemString[1]);
       System.out.println("You have dropped " + itemString[1]);
@@ -177,6 +176,13 @@ public class MUDClient {
         System.err.println("I/O error.");
         System.err.println(e.getMessage());
       }
+
+      // drop all items that the player is carrying to avoid item duplication
+      for (String item : inventory) {
+        serv.dropItem(currentLocation, item);
+      }
+      inventory.clear();
+
       joinMUD(mudName);
       currentLocation = serv.getStartLocation();
       displayOptions();
