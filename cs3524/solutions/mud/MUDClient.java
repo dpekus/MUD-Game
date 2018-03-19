@@ -68,6 +68,14 @@ public class MUDClient {
       System.out.print(">> ");
       mudName = in.readLine();
 
+      while(!serv.checkIfMUDExists(mudName)) {
+        System.out.println();
+        System.out.println("Sorry, no such MUD found. Why not try again? (The names are case sensitive)");
+        System.out.println();
+        System.out.print(">> ");
+        mudName = in.readLine();
+      }
+
       joinMUD(mudName);
 
       System.out.println();
@@ -186,7 +194,6 @@ public class MUDClient {
       joinMUD(mudName);
       currentLocation = serv.getStartLocation();
       displayOptions();
-      System.out.println(serv.getCurrentLocationInfo(currentLocation));
     }
   }
 
@@ -206,10 +213,15 @@ public class MUDClient {
   private static void displayAvailableMUDs() throws RemoteException {
     System.out.println("Currently, these MUDs are available: ");
     System.out.println();
-    System.out.println(serv.getAvailableMUDs());
+    String[] availableMUDs = serv.getAvailableMUDs();
+    for (String mud : availableMUDs) {
+      System.out.println("* " + mud);
+    }
+    System.out.println();
   }
 
   private static void joinMUD(String mudName) throws RemoteException {
-    serv.createUser(playerName, mudName);
+    System.out.println(serv.createUser(playerName, mudName));
+    System.out.println();
   }
 }
