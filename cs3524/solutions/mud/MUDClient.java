@@ -46,6 +46,8 @@ public class MUDClient {
 
       serv = (MUDServerInterface) Naming.lookup(regURL);
 
+      serv.initialize();
+
       // set up the game
       System.out.println("Welcome!");
       System.out.println("What is your name?");
@@ -73,8 +75,9 @@ public class MUDClient {
       running = true;
       currentLocation = serv.getStartLocation();
 
-
       displayOptions();
+
+      System.out.println(serv.getCurrentLocationInfo(currentLocation));
 
       runGame();
 
@@ -161,6 +164,24 @@ public class MUDClient {
     if (playerInput.contains("muds")) {
       displayAvailableMUDs();
     }
+
+    // move to another MUD
+    if (playerInput.contains("changemud")) {
+      displayAvailableMUDs();
+      System.out.println();
+      System.out.println("Which MUD would you like to move to?");
+      try {
+        System.out.print(">> ");
+        mudName = in.readLine();
+      } catch (IOException e) {
+        System.err.println("I/O error.");
+        System.err.println(e.getMessage());
+      }
+      joinMUD(mudName);
+      currentLocation = serv.getStartLocation();
+      displayOptions();
+      System.out.println(serv.getCurrentLocationInfo(currentLocation));
+    }
   }
 
   private static void displayOptions() {
@@ -172,6 +193,7 @@ public class MUDClient {
     System.out.println("* Drop <item>  - drop an item from your inventory to the ground");
     System.out.println("* Help  - display the available commands");
     System.out.println("* Muds  - display all currently available MUDs");
+    System.out.println("* ChangeMUD  - move to another MUD");
     System.out.println("* Exit  - exit the game");
   }
 

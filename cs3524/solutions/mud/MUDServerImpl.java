@@ -8,14 +8,18 @@ public class MUDServerImpl implements MUDServerInterface {
   // all available MUDs
   private Map<String, MUD> MUDs = new HashMap<String, MUD>();
 
-  //MUD world = new MUD("mymud.edg", "mymud.msg", "mymud.thg");
-  private MUD currentInstance = MUDs.put("myMUD", new MUD("mymud.edg","mymud.msg","mymud.thg"));
+  // stores the current MUD that the player is on
+  private MUD currentInstance;
 
   public MUDServerImpl() throws RemoteException {
   }
 
-  public String createUser(String playerName, String mudName) {
+  public void initialize() {
+    MUDs.put("myMUD", new MUD("mymud.edg","mymud.msg","mymud.thg"));
+    MUDs.put("myMUD2", new MUD("mymud.edg","mymud.msg","mymud.thg"));
+  }
 
+  public String createUser(String playerName, String mudName) {
     System.out.println("The player " + playerName + " has joined the " + mudName + " MUD.");
     currentInstance = MUDs.get(mudName);
     currentInstance.addThing(currentInstance.startLocation(), playerName);
@@ -24,6 +28,10 @@ public class MUDServerImpl implements MUDServerInterface {
 
   public String moveUser(String currentLocation, String direction, String playerName) {
     return currentLocation = currentInstance.moveThing(currentLocation, direction, playerName);
+  }
+
+  public String getStartLocation() {
+    return currentInstance.startLocation();
   }
 
   public String getCurrentLocationInfo(String currentLocation) {
