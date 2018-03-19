@@ -185,15 +185,23 @@ public class MUDClient {
         System.err.println(e.getMessage());
       }
 
-      // drop all items that the player is carrying to avoid item duplication
-      for (String item : inventory) {
-        serv.dropItem(currentLocation, item);
-      }
-      inventory.clear();
-
       joinMUD(mudName);
       currentLocation = serv.getStartLocation();
       displayOptions();
+    }
+
+    // create a new MUD
+    if (playerInput.contains("createmud")) {
+      System.out.println("Enter the name of your new MUD:");
+      try {
+        System.out.print(">> ");
+        mudName = in.readLine();
+        System.out.println();
+      } catch (IOException e) {
+        System.err.println("I/O error.");
+        System.err.println(e.getMessage());
+      }
+      createNewMUD(mudName);
     }
   }
 
@@ -207,6 +215,7 @@ public class MUDClient {
     System.out.println("* Help  - display the available commands");
     System.out.println("* Muds  - display all currently available MUDs");
     System.out.println("* ChangeMUD  - move to another MUD");
+    System.out.println("* CreateMUD  - create a new MUD");
     System.out.println("* Exit  - exit the game");
   }
 
@@ -221,7 +230,31 @@ public class MUDClient {
   }
 
   private static void joinMUD(String mudName) throws RemoteException {
+    // drop all items that the player is carrying to avoid item duplication
+    for (String item : inventory) {
+      serv.dropItem(currentLocation, item);
+    }
+    inventory.clear();
+
     System.out.println(serv.createUser(playerName, mudName));
     System.out.println();
+  }
+
+  private static void createNewMUD(String mudName) throws RemoteException {
+    serv.createNewMUD(mudName);
+    System.out.println("Your MUD " + mudName + " has been created.");
+    System.out.println("Would you like to join it? (Y/N)");
+    try {
+      System.out.print(">> ");
+      String answer = in.readLine();
+      if (answer=="Y") {
+        joinMUD(mudName);
+      } else {
+        displayOptions();
+      }
+    } catch (IOException e) {
+      System.err.println("I/O error.");
+      System.err.println(e.getMessage());
+    }
   }
 }

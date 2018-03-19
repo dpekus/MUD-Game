@@ -15,4 +15,5 @@ public interface MUDServerInterface extends Remote {
   public void exit(String playerName) throws RemoteException;
   public String[] getAvailableMUDs() throws RemoteException;
   public boolean checkIfMUDExists(String mudName) throws RemoteException;
+  public void createNewMUD(String mudName) throws RemoteException;
 }
