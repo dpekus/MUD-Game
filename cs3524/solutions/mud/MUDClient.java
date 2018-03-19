@@ -241,20 +241,23 @@ public class MUDClient {
   }
 
   private static void createNewMUD(String mudName) throws RemoteException {
-    serv.createNewMUD(mudName);
-    System.out.println("Your MUD " + mudName + " has been created.");
-    System.out.println("Would you like to join it? (Y/N)");
-    try {
-      System.out.print(">> ");
-      String answer = in.readLine();
-      if (answer=="Y") {
-        joinMUD(mudName);
-      } else {
-        displayOptions();
+    if(serv.createNewMUD(mudName)) {
+      System.out.println("Your MUD " + mudName + " has been created.");
+      System.out.println("Would you like to join it? (Y/N)");
+      try {
+        System.out.print(">> ");
+        String answer = in.readLine();
+        if (answer=="Y") {
+          joinMUD(mudName);
+        } else {
+          displayOptions();
+        }
+      } catch (IOException e) {
+        System.err.println("I/O error.");
+        System.err.println(e.getMessage());
       }
-    } catch (IOException e) {
-      System.err.println("I/O error.");
-      System.err.println(e.getMessage());
+    } else {
+      System.out.println("Sorry, but the maximum number of MUDs has been reached.");
     }
   }
 }

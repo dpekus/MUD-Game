@@ -11,6 +11,15 @@ public class MUDServerImpl implements MUDServerInterface {
   // stores the current MUD that the player is on
   private MUD currentInstance;
 
+  // number of players currently online
+  private static int players = 0;
+
+  // maximum number of MUDs running at the same time
+  private static int maxNumberOfMUDs = 5;
+
+  // maximum number of player currently online
+  private static int maxNumberOfPlayers = 10;
+
   public MUDServerImpl() throws RemoteException {
   }
 
@@ -63,7 +72,13 @@ public class MUDServerImpl implements MUDServerInterface {
     return Arrays.stream(getAvailableMUDs()).anyMatch(mudName::equals);
   }
 
-  public void createNewMUD(String mudName) {
-    MUDs.put(mudName, new MUD("mymud.edg","mymud.msg","mymud.thg"));
+  public boolean createNewMUD(String mudName) {
+    // check if the current number of MUDs are not exceeding the maximum number
+    if (maxNumberOfMUDs > MUDs.size()) {
+      MUDs.put(mudName, new MUD("mymud.edg","mymud.msg","mymud.thg"));
+      return true;
+    } else {
+      return false;
+    }
   }
 }
