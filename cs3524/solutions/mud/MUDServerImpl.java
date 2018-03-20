@@ -32,14 +32,11 @@ public class MUDServerImpl implements MUDServerInterface {
   }
 
   public String createUser(String playerName, String mudName) {
-    if (checkIfMUDExists(mudName)) {
-      System.out.println("The player " + playerName + " has joined the " + mudName + " MUD.");
-      currentInstance = MUDs.get(mudName);
-      currentInstance.addThing(currentInstance.startLocation(), playerName);
-      return currentInstance.locationInfo(currentInstance.startLocation());
-    } else {
-      return "Sorry, no such MUD " + mudName + " found.";
-    }
+    System.out.println("The player " + playerName + " has joined the " + mudName + " MUD.");
+    currentInstance = MUDs.get(mudName);
+    currentInstance.addThing(currentInstance.startLocation(), playerName);
+    currentInstance.players.put(playerName, currentInstance.startLocation());
+    return currentInstance.locationInfo(currentInstance.startLocation());
   }
 
   // checks if the number of player in a given MUD does not exceed the maximum
@@ -63,6 +60,8 @@ public class MUDServerImpl implements MUDServerInterface {
   }
 
   public String moveUser(String currentLocation, String direction, String playerName) {
+    currentInstance.players.remove(playerName);
+    currentInstance.players.put(playerName, direction);
     return currentInstance.moveThing(currentLocation, direction, playerName);
   }
 
@@ -83,6 +82,7 @@ public class MUDServerImpl implements MUDServerInterface {
   }
 
   public void exit(String playerName) {
+    currentInstance.players.remove(playerName);
     System.out.println("The player " + playerName + " has left the server.");
   }
 
