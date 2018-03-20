@@ -7,6 +7,7 @@ public interface MUDServerInterface extends Remote {
 
   public void initialize() throws RemoteException;
   public String createUser(String playerName, String mudName) throws RemoteException;
+  public boolean checkIfPlayerLimitNotExceeded() throws RemoteException;
   public String moveUser(String currentLocation, String direction, String playerName) throws RemoteException;
   public String getStartLocation() throws RemoteException;
   public String getCurrentLocationInfo(String currentLocation) throws RemoteException;

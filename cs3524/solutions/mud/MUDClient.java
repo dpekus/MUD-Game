@@ -76,7 +76,13 @@ public class MUDClient {
         mudName = in.readLine();
       }
 
-      joinMUD(mudName);
+      if (serv.checkIfPlayerLimitNotExceeded()) {
+        joinMUD(mudName);
+      } else {
+        System.out.println("Sorry, the total number of available players has been exceeded. Please try again later.");
+        System.exit(0);
+      }
+
 
       System.out.println();
       System.out.println("Let's begin");

@@ -29,7 +29,6 @@ public class MUDServerImpl implements MUDServerInterface {
   }
 
   public String createUser(String playerName, String mudName) {
-
     if (checkIfMUDExists(mudName)) {
       System.out.println("The player " + playerName + " has joined the " + mudName + " MUD.");
       currentInstance = MUDs.get(mudName);
@@ -37,6 +36,15 @@ public class MUDServerImpl implements MUDServerInterface {
       return currentInstance.locationInfo(currentInstance.startLocation());
     } else {
       return "Sorry, no such MUD " + mudName + " found.";
+    }
+  }
+
+  // check if the current number of players online is not exceeding the maximum number of players
+  public boolean checkIfPlayerLimitNotExceeded() {
+    if (players < maxNumberOfPlayers) {
+      return true;
+    } else {
+      return false;
     }
   }
 
