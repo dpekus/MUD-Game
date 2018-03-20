@@ -49,7 +49,7 @@ public class MUDServerImpl implements MUDServerInterface {
   }
 
   public String moveUser(String currentLocation, String direction, String playerName) {
-    return currentLocation = currentInstance.moveThing(currentLocation, direction, playerName);
+    return currentInstance.moveThing(currentLocation, direction, playerName);
   }
 
   public String getStartLocation() {

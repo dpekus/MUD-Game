@@ -125,10 +125,17 @@ public class MUDClient {
     if (playerInput.contains("move")) {
       // get the direction where the player wants to move
       String[] directionString = playerInput.split(" ");
-      // move the player and display information about the new location
-      System.out.println("You are going " + directionString[1] + "...");
-      currentLocation = serv.moveUser("A", directionString[1], playerName);
-      System.out.println(serv.getCurrentLocationInfo(currentLocation));
+
+      // if the server returns the same location as the player is at right now,
+      // it means that there is no path to that direction
+      if (currentLocation.equals(serv.moveUser(currentLocation, directionString[1], playerName))) {
+        System.out.println("Sorry, either there isn't a path to this direction, or this direction is not valid.");
+      } else {
+        // move the player and display information about the new location
+        System.out.println("You are going " + directionString[1] + "...");
+        currentLocation = serv.moveUser(currentLocation, directionString[1], playerName);
+        System.out.println(serv.getCurrentLocationInfo(currentLocation));
+      }
     }
 
     // pick up an item
@@ -160,6 +167,12 @@ public class MUDClient {
           System.out.println("* " + item);
         }
       }
+    }
+
+    // get the information about player's surroundings
+    if (playerInput.contains("lookaround")) {
+      System.out.println("You look around...");
+      System.out.println(serv.getCurrentLocationInfo(currentLocation));
     }
 
     // print the available commands to the player
@@ -218,6 +231,8 @@ public class MUDClient {
     System.out.println("* Move <direction>  - move to a selected direction (north, east, south, west)");
     System.out.println("* Pick <item>  - pick up an item from the ground to your inventory");
     System.out.println("* Drop <item>  - drop an item from your inventory to the ground");
+    System.out.println("* Inventory  - see the items you are carrying");
+    System.out.println("* Lookaround  - get the information about your surroundings");
     System.out.println("* Help  - display the available commands");
     System.out.println("* Muds  - display all currently available MUDs");
     System.out.println("* ChangeMUD  - move to another MUD");
