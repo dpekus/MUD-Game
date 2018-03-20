@@ -11,14 +11,17 @@ public class MUDServerImpl implements MUDServerInterface {
   // stores the current MUD that the player is on
   private MUD currentInstance;
 
-  // number of players currently online
-  private static int players = 0;
+  // number of players currently online throughout all MUDs
+  private static int playersOnline = 0;
 
   // maximum number of MUDs running at the same time
   private static int maxNumberOfMUDs = 5;
 
   // maximum number of player currently online
   private static int maxNumberOfPlayers = 10;
+
+  // maximum number of player currently playing in a single MUD
+  private static int maxNumberOfPlayersInMUD = 5;
 
   public MUDServerImpl() throws RemoteException {
   }
@@ -39,9 +42,20 @@ public class MUDServerImpl implements MUDServerInterface {
     }
   }
 
-  // check if the current number of players online is not exceeding the maximum number of players
+  // checks if the number of player in a given MUD does not exceed the maximum
+  // number of players allowed to play in a single MUD
+  public boolean checkIfPlayerLimitNotExceededInMUD(String mudName) {
+    currentInstance = MUDs.get(mudName);
+    if (currentInstance.players.size() < maxNumberOfPlayersInMUD) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  // checks if the current number of players online is not exceeding the maximum number of players
   public boolean checkIfPlayerLimitNotExceeded() {
-    if (players < maxNumberOfPlayers) {
+    if (playersOnline < maxNumberOfPlayers) {
       return true;
     } else {
       return false;

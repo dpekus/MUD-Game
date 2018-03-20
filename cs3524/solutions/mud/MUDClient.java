@@ -63,25 +63,7 @@ public class MUDClient {
 
       displayAvailableMUDs();
 
-      System.out.println("Which MUD would you like to join?");
-      System.out.println();
-      System.out.print(">> ");
-      mudName = in.readLine();
-
-      while(!serv.checkIfMUDExists(mudName)) {
-        System.out.println();
-        System.out.println("Sorry, no such MUD found. Why not try again? (The names are case sensitive)");
-        System.out.println();
-        System.out.print(">> ");
-        mudName = in.readLine();
-      }
-
-      if (serv.checkIfPlayerLimitNotExceeded()) {
-        joinMUD(mudName);
-      } else {
-        System.out.println("Sorry, the total number of available players has been exceeded. Please try again later.");
-        System.exit(0);
-      }
+      joinMUD();
 
 
       System.out.println();
@@ -170,7 +152,7 @@ public class MUDClient {
     }
 
     // get the information about player's surroundings
-    if (playerInput.contains("lookaround")) {
+    if (playerInput.contains("location")) {
       System.out.println("You look around...");
       System.out.println(serv.getCurrentLocationInfo(currentLocation));
     }
@@ -194,17 +176,7 @@ public class MUDClient {
     // move to another MUD
     if (playerInput.contains("changemud")) {
       displayAvailableMUDs();
-      System.out.println();
-      System.out.println("Which MUD would you like to move to?");
-      try {
-        System.out.print(">> ");
-        mudName = in.readLine();
-      } catch (IOException e) {
-        System.err.println("I/O error.");
-        System.err.println(e.getMessage());
-      }
-
-      joinMUD(mudName);
+      joinMUD();
       currentLocation = serv.getStartLocation();
       displayOptions();
     }
@@ -232,7 +204,7 @@ public class MUDClient {
     System.out.println("* Pick <item>  - pick up an item from the ground to your inventory");
     System.out.println("* Drop <item>  - drop an item from your inventory to the ground");
     System.out.println("* Inventory  - see the items you are carrying");
-    System.out.println("* Lookaround  - get the information about your surroundings");
+    System.out.println("* Location  - get the information about your surroundings");
     System.out.println("* Help  - display the available commands");
     System.out.println("* Muds  - display all currently available MUDs");
     System.out.println("* ChangeMUD  - move to another MUD");
@@ -250,33 +222,57 @@ public class MUDClient {
     System.out.println();
   }
 
-  private static void joinMUD(String mudName) throws RemoteException {
-    // drop all items that the player is carrying to avoid item duplication
-    for (String item : inventory) {
-      serv.dropItem(currentLocation, item);
-    }
-    inventory.clear();
-
-    System.out.println(serv.createUser(playerName, mudName));
+  private static void joinMUD() throws RemoteException {
+    // get the name of the MUD that the player wishes to join
+    System.out.println("Which MUD would you like to join?");
     System.out.println();
+    try {
+      System.out.print(">> ");
+      mudName = in.readLine();
+    } catch (IOException e) {
+        System.err.println("I/O error.");
+        System.err.println(e.getMessage());
+    }
+
+    // check if such MUD exists
+    // if not, prompt the player to reenter the name
+    if (!serv.checkIfMUDExists(mudName)) {
+      System.out.println("Sorry, no such MUD found. Why not try again? (The names are case sensitive)");
+      System.out.println();
+      joinMUD();
+    } else {
+
+      // check if the current total number of players online is not exceeding the
+      // maximum, otherwise terminate the program
+      if (!serv.checkIfPlayerLimitNotExceeded()) {
+        System.out.println("Sorry, the total number of available players has been exceeded. Please try again later.");
+        System.exit(0);
+      } else {
+
+        // check if the current number of playing in the chosen MUD is not exceeding
+        // the total, otherwise propmt the player to choose another one
+        if (!serv.checkIfPlayerLimitNotExceededInMUD(mudName)) {
+          System.out.println("Sorry, the total number of players playing on this MUD is exceeding the maximum. Choose another MUD or try again later.");
+          joinMUD();
+        } else {
+
+          // drop all items that the player is carrying to avoid item duplication
+          for (String item : inventory) {
+            serv.dropItem(currentLocation, item);
+          }
+          inventory.clear();
+
+          // move the player to another MUD
+          System.out.println(serv.createUser(playerName, mudName));
+          System.out.println();
+        }
+      }
+    }
   }
 
   private static void createNewMUD(String mudName) throws RemoteException {
     if(serv.createNewMUD(mudName)) {
       System.out.println("Your MUD " + mudName + " has been created.");
-      System.out.println("Would you like to join it? (Y/N)");
-      try {
-        System.out.print(">> ");
-        String answer = in.readLine();
-        if (answer=="Y") {
-          joinMUD(mudName);
-        } else {
-          displayOptions();
-        }
-      } catch (IOException e) {
-        System.err.println("I/O error.");
-        System.err.println(e.getMessage());
-      }
     } else {
       System.out.println("Sorry, but the maximum number of MUDs has been reached.");
     }

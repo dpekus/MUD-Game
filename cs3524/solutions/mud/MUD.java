@@ -26,6 +26,10 @@ public class MUD
      * Private stuff
      */
 
+    // record of all players currently logged in to this MUD
+    // stores their name and location
+    public Map<String, String> players = new HashMap<String, String>();
+
     // A record of all the vertices in the MUD graph. HashMaps are not
     // synchronized, but we don't really need this to be synchronised.
     private Map<String,Vertex> vertexMap = new HashMap<String,Vertex>();
