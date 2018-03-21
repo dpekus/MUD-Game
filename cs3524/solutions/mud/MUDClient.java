@@ -65,7 +65,6 @@ public class MUDClient {
 
       joinMUD();
 
-
       System.out.println();
       System.out.println("Let's begin");
       running = true;
@@ -161,7 +160,7 @@ public class MUDClient {
     if (playerInput.contains("players")) {
       System.out.println("Currently, these players are playing in this MUD: ");
       System.out.println();
-      String[] currentPlayers = serv.getCurrentPlayers();
+      String[] currentPlayers = serv.getCurrentPlayersInMUD();
       for (String name : currentPlayers) {
         System.out.println("* " + name);
       }

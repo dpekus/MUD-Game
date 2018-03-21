@@ -12,7 +12,8 @@ public class MUDServerImpl implements MUDServerInterface {
   private MUD currentInstance;
 
   // number of players currently online throughout all MUDs
-  private static int playersOnline = 0;
+  // stores the name of the player and the name of the MUD that the player is on
+  private Map<String, String> currentPlayers = new HashMap<String, String>();
 
   // maximum number of MUDs running at the same time
   private static int maxNumberOfMUDs = 5;
@@ -36,6 +37,14 @@ public class MUDServerImpl implements MUDServerInterface {
     currentInstance = MUDs.get(mudName);
     currentInstance.addThing(currentInstance.startLocation(), playerName);
     currentInstance.players.put(playerName, currentInstance.startLocation());
+
+    // if changing MUD, remove the player from the current players list
+    if (Arrays.stream(currentPlayers.keySet().toArray(new String[currentPlayers.keySet().size()])).anyMatch(playerName::equals)) {
+      currentPlayers.remove(playerName);
+    }
+    // add the player to the current players list with the MUD that they are currently on
+    currentPlayers.put(playerName, mudName);
+
     return currentInstance.locationInfo(currentInstance.startLocation());
   }
 
@@ -52,7 +61,7 @@ public class MUDServerImpl implements MUDServerInterface {
 
   // checks if the current number of players online is not exceeding the maximum number of players
   public boolean checkIfPlayerLimitNotExceeded() {
-    if (playersOnline < maxNumberOfPlayers) {
+    if (currentPlayers.size() < maxNumberOfPlayers) {
       return true;
     } else {
       return false;
@@ -81,12 +90,13 @@ public class MUDServerImpl implements MUDServerInterface {
     currentInstance.addThing(currentLocation, item);
   }
 
-  public String[] getCurrentPlayers() {
+  public String[] getCurrentPlayersInMUD() {
     return currentInstance.players.keySet().toArray(new String[currentInstance.players.keySet().size()]);
   }
 
   public void exit(String playerName) {
     currentInstance.players.remove(playerName);
+    currentPlayers.remove(playerName);
     System.out.println("The player " + playerName + " has left the server.");
   }
 
