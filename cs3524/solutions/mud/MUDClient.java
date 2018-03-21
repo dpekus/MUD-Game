@@ -157,6 +157,17 @@ public class MUDClient {
       System.out.println(serv.getCurrentLocationInfo(currentLocation));
     }
 
+    // display the list of players currently playing in the same MUD"
+    if (playerInput.contains("players")) {
+      System.out.println("Currently, these players are playing in this MUD: ");
+      System.out.println();
+      String[] currentPlayers = serv.getCurrentPlayers();
+      for (String name : currentPlayers) {
+        System.out.println("* " + name);
+      }
+      System.out.println();
+    }
+
     // print the available commands to the player
     if (playerInput.contains("help")) {
       displayOptions();
@@ -204,7 +215,8 @@ public class MUDClient {
     System.out.println("* Pick <item>  - pick up an item from the ground to your inventory");
     System.out.println("* Drop <item>  - drop an item from your inventory to the ground");
     System.out.println("* Inventory  - see the items you are carrying");
-    System.out.println("* Location  - get the information about your surroundings");
+    System.out.println("* Location  - display the information about your surroundings");
+    System.out.println("* Players  - display the list of players currently playing in the same MUD");
     System.out.println("* Help  - display the available commands");
     System.out.println("* Muds  - display all currently available MUDs");
     System.out.println("* ChangeMUD  - move to another MUD");

@@ -81,6 +81,10 @@ public class MUDServerImpl implements MUDServerInterface {
     currentInstance.addThing(currentLocation, item);
   }
 
+  public String[] getCurrentPlayers() {
+    return currentInstance.players.keySet().toArray(new String[currentInstance.players.keySet().size()]);
+  }
+
   public void exit(String playerName) {
     currentInstance.players.remove(playerName);
     System.out.println("The player " + playerName + " has left the server.");
