@@ -104,6 +104,10 @@ public class MUDServerImpl implements MUDServerInterface {
     return MUDs.keySet().toArray(new String[MUDs.keySet().size()]);
   }
 
+  public Integer getMUDCount() {
+    return MUDs.size();
+  }
+
   public boolean checkIfMUDExists(String mudName) {
     return Arrays.stream(getAvailableMUDs()).anyMatch(mudName::equals);
   }
@@ -116,5 +120,13 @@ public class MUDServerImpl implements MUDServerInterface {
     } else {
       return false;
     }
+  }
+
+  public Integer getMaxNumberOfMuds() {
+    return maxNumberOfMUDs;
+  }
+
+  public void setNewMaxNumberOfMUDs(Integer newMaxMUDS) {
+    maxNumberOfMUDs = newMaxMUDS;
   }
 }

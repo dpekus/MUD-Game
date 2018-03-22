@@ -204,6 +204,33 @@ public class MUDClient {
       }
       createNewMUD(mudName);
     }
+
+    // allow the player to change the number of maximum MUDs in real time
+    if (playerInput.contains("changemaxmuds")) {
+      Integer maxNumberOfMUDs = serv.getMaxNumberOfMuds();
+      System.out.println("Currently, the maximum number of MUDs is " + maxNumberOfMUDs);
+      System.out.println("Enter the new maximum number of MUDs (remember, it cannot be lower than the current number of MUDs running):");
+
+      try {
+        System.out.print(">> ");
+        String input = in.readLine();
+        Integer newMaxMUDs = Integer.parseInt(input);
+        System.out.println();
+
+        if (newMaxMUDs.compareTo(serv.getMUDCount()) >= 0) {
+          serv.setNewMaxNumberOfMUDs(newMaxMUDs);
+          System.out.println("The new maximum number of MUDs is " + newMaxMUDs);
+        } else {
+          System.out.println("Sorry, the maximum number of MUDs cannot be lower than the number of MUDs currently running.");
+        }
+
+      } catch (IOException e) {
+        System.err.println("I/O error.");
+        System.err.println(e.getMessage());
+      }
+
+
+    }
   }
 
   private static void displayOptions() {
@@ -220,11 +247,13 @@ public class MUDClient {
     System.out.println("* Muds  - display all currently available MUDs");
     System.out.println("* ChangeMUD  - move to another MUD");
     System.out.println("* CreateMUD  - create a new MUD");
+    System.out.println("* Changemaxmuds  - change the number of maximum MUDS");
     System.out.println("* Exit  - exit the game");
   }
 
   private static void displayAvailableMUDs() throws RemoteException {
-    System.out.println("Currently, these MUDs are available: ");
+    Integer mudCount = serv.getMUDCount();
+    System.out.println("Currently, there are " + mudCount + " MUDs are available: ");
     System.out.println();
     String[] availableMUDs = serv.getAvailableMUDs();
     for (String mud : availableMUDs) {
@@ -285,7 +314,9 @@ public class MUDClient {
     if(serv.createNewMUD(mudName)) {
       System.out.println("Your MUD " + mudName + " has been created.");
     } else {
-      System.out.println("Sorry, but the maximum number of MUDs has been reached.");
+      Integer maxNumberOfMUDs = serv.getMaxNumberOfMuds();
+      System.out.println("Sorry, but the maximum number of MUDs (" + maxNumberOfMUDs + ") has been reached.");
+      System.out.println("You can change this number by using the 'changemaxmuds' command.");
     }
   }
 }
