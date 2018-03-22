@@ -139,7 +139,7 @@ public class MUDClient {
     }
 
     // display the contents of player's inventory
-    if (playerInput.contains("inventory")) {
+    if (playerInput.equals("inventory")) {
       if (inventory.size() < 1) {
         System.out.println("Your inventory is empty.");
       } else {
@@ -151,13 +151,13 @@ public class MUDClient {
     }
 
     // get the information about player's surroundings
-    if (playerInput.contains("location")) {
+    if (playerInput.equals("location")) {
       System.out.println("You look around...");
       System.out.println(serv.getCurrentLocationInfo(currentLocation));
     }
 
     // display the list of players currently playing in the same MUD"
-    if (playerInput.contains("players")) {
+    if (playerInput.equals("players")) {
       System.out.println("Currently, these players are playing in this MUD: ");
       System.out.println();
       String[] currentPlayers = serv.getCurrentPlayersInMUD();
@@ -168,23 +168,23 @@ public class MUDClient {
     }
 
     // print the available commands to the player
-    if (playerInput.contains("help")) {
+    if (playerInput.equals("help")) {
       displayOptions();
     }
 
     // exit the game
-    if (playerInput.contains("exit")) {
+    if (playerInput.equals("exit")) {
       serv.exit(playerName);
       running = false;
     }
 
     // display all available MUDs
-    if (playerInput.contains("muds")) {
+    if (playerInput.equals("muds")) {
       displayAvailableMUDs();
     }
 
     // move to another MUD
-    if (playerInput.contains("changemud")) {
+    if (playerInput.equals("changemud")) {
       displayAvailableMUDs();
       joinMUD();
       currentLocation = serv.getStartLocation();
@@ -192,7 +192,7 @@ public class MUDClient {
     }
 
     // create a new MUD
-    if (playerInput.contains("createmud")) {
+    if (playerInput.equals("createmud")) {
       System.out.println("Enter the name of your new MUD:");
       try {
         System.out.print(">> ");
@@ -206,9 +206,9 @@ public class MUDClient {
     }
 
     // allow the player to change the number of maximum MUDs in real time
-    if (playerInput.contains("changemaxmuds")) {
+    if (playerInput.equals("changemaxmuds")) {
       Integer maxNumberOfMUDs = serv.getMaxNumberOfMuds();
-      System.out.println("Currently, the maximum number of MUDs is " + maxNumberOfMUDs);
+      System.out.println("Currently, the maximum number of MUDs is " + maxNumberOfMUDs + ", and there are " + serv.getMUDCount + " MUDs running.");
       System.out.println("Enter the new maximum number of MUDs (remember, it cannot be lower than the current number of MUDs running):");
 
       try {
