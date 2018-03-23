@@ -11,7 +11,7 @@ The game was created as part of the CS3524 (Distributed Systems and Security) co
 50010’ command
 3. In a separate terminal, run the ‘java mud.MUDServerMainline 50010 50012’
 command, which will launch the MUD’s server mainline. The first port should be the same one you used for the rmiregistry in the previous step, while the second one can be chosen freely
-4. In another (third) terminal, run the ‘java mud.MUDClient <hostname> 50010’ command to launch the MUD’s client. You must type your host name, which is the name of the machine that you’re running the game on (localhost works), and pass it the same port that you used with the rmiregistry. The game should start now
+4. In another (third) terminal, run the ‘java mud.MUDClient [hostname] 50010’ command to launch the MUD’s client. You must type your host name, which is the name of the machine that you’re running the game on (localhost works), and pass it the same port that you used with the rmiregistry. The game should start now
 
 ## Functionalities:
 
