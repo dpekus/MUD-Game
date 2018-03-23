@@ -1,7 +1,11 @@
-package cs3524.solutions.mud;
+package mud;
 
 import java.rmi.RemoteException;
 import java.util.*;
+
+/*
+  MUD game made by Dovydas Pekus, University of Aberdeen
+*/
 
 public class MUDServerImpl implements MUDServerInterface {
 
@@ -27,11 +31,14 @@ public class MUDServerImpl implements MUDServerInterface {
   public MUDServerImpl() throws RemoteException {
   }
 
+  // create two MUDs
   public void initialize() {
     MUDs.put("myMUD", new MUD("mymud.edg","mymud.msg","mymud.thg"));
     MUDs.put("myMUD2", new MUD("mymud.edg","mymud.msg","mymud.thg"));
   }
 
+  // create user
+  // returns the location information about the players starting location
   public String createUser(String playerName, String mudName) {
     System.out.println("The player " + playerName + " has joined the " + mudName + " MUD.");
     currentInstance = MUDs.get(mudName);
@@ -68,50 +75,62 @@ public class MUDServerImpl implements MUDServerInterface {
     }
   }
 
+  // move the user to a give direction
+  // returns a string telling that the player has moved a given direction
   public String moveUser(String currentLocation, String direction, String playerName) {
     currentInstance.players.remove(playerName);
     currentInstance.players.put(playerName, direction);
     return currentInstance.moveThing(currentLocation, direction, playerName);
   }
 
+  // returns the start location of the MUD
   public String getStartLocation() {
     return currentInstance.startLocation();
   }
 
+  // returns the information about the player's current location
   public String getCurrentLocationInfo(String currentLocation) {
     return currentInstance.locationInfo(currentLocation);
   }
 
+  // deletes an object from the location by putting it in the player's inventory
   public void pickUpItem(String currentLocation, String item) {
     currentInstance.delThing(currentLocation, item);
   }
 
+  // add an object to the location by dropping it from the player's inventory
   public void dropItem(String currentLocation, String item) {
     currentInstance.addThing(currentLocation, item);
   }
 
+  // returns a list of all players that are currently playing in the same MUD
   public String[] getCurrentPlayersInMUD() {
     return currentInstance.players.keySet().toArray(new String[currentInstance.players.keySet().size()]);
   }
 
+  // handles the player exiting the MUD by removing it from the players' list
   public void exit(String playerName) {
     currentInstance.players.remove(playerName);
     currentPlayers.remove(playerName);
     System.out.println("The player " + playerName + " has left the server.");
   }
 
+  // returns a list of all currently available MUDs
   public String[] getAvailableMUDs() {
     return MUDs.keySet().toArray(new String[MUDs.keySet().size()]);
   }
 
+  // returns a number of currently available MUDs
   public Integer getMUDCount() {
     return MUDs.size();
   }
 
+  // checks if a MUD of a given name currently exists
   public boolean checkIfMUDExists(String mudName) {
     return Arrays.stream(getAvailableMUDs()).anyMatch(mudName::equals);
   }
 
+  // creates a new MUD in real time
   public boolean createNewMUD(String mudName) {
     // check if the current number of MUDs are not exceeding the maximum number
     if (maxNumberOfMUDs > MUDs.size()) {
@@ -122,10 +141,12 @@ public class MUDServerImpl implements MUDServerInterface {
     }
   }
 
+  // returns a number of current maximum number of MUDs
   public Integer getMaxNumberOfMuds() {
     return maxNumberOfMUDs;
   }
 
+  // sets the new maximum number of MUDs
   public void setNewMaxNumberOfMUDs(Integer newMaxMUDS) {
     maxNumberOfMUDs = newMaxMUDS;
   }

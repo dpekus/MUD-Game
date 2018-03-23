@@ -1,8 +1,8 @@
 /***********************************************************************
- * cs3524.solutions.mud.Vertex
+ * mud.Vertex
  ***********************************************************************/
 
-package cs3524.solutions.mud;
+package mud;
 
 import java.util.Map;
 import java.util.HashMap;
@@ -23,7 +23,7 @@ class Vertex
 
     public Vertex( String nm )
     {
-	_name = nm; 
+	_name = nm;
 	_routes = new HashMap<String,Edge>(); // Not synchronised
 	_things = new Vector<String>();       // Synchronised
     }
@@ -49,4 +49,3 @@ class Vertex
 	return summary;
     }
 }
-

@@ -1,12 +1,12 @@
-mud:
-	javac cs3524/solutions/mud/Edge.java; \
-	javac cs3524/solutions/mud/MUD.java; \
-	javac cs3524/solutions/mud/Vertex.java; \
-	javac cs3524/solutions/mud/MUDClient.java; \
-	javac cs3524/solutions/mud/MUDServerImpl.java; \
-	javac cs3524/solutions/mud/MUDServerInterface.java; \
-	javac cs3524/solutions/mud/MUDServerMainline.java
+game:
+	javac mud/Edge.java; \
+	javac mud/MUD.java; \
+	javac mud/Vertex.java; \
+	javac mud/MUDClient.java; \
+	javac mud/MUDServerImpl.java; \
+	javac mud/MUDServerInterface.java; \
+	javac mud/MUDServerMainline.java
 
 clean:
-	rm cs3524/solutions/mud/*.class
+	rm mud/*.class
 	clear

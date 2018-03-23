@@ -1,7 +1,14 @@
-package cs3524.solutions.mud;
+package mud;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+
+/*
+  MUD game made by Dovydas Pekus, University of Aberdeen
+
+  The client will be accessing these methods, they are implemented in the
+  MUDServerImpl file
+*/
 
 public interface MUDServerInterface extends Remote {
 

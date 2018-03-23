@@ -1,4 +1,4 @@
-package cs3524.solutions.mud;
+package mud;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -9,24 +9,38 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/*
+  MUD game made by Dovydas Pekus, University of Aberdeen
+
+  This is the main game client file, which gets all the inputs from the player
+  and displays the output from the server
+*/
+
+
 public class MUDClient {
 
   // prepare the input reader
   private static BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+
   // the player's name that they will be using throughout the game
   private static String playerName = "";
+
   // specify whether the game is running or not
   private static boolean running = false;
+
   // the name of the MUD that the player is currently on
   private static String mudName = "";
 
+  // remote server interface
   private static MUDServerInterface serv;
 
   // current location of the player
   private static String currentLocation = "";
+
   // the items that the player is currently carrying
   private static List<String> inventory = new ArrayList<>();
 
+  // main game class
   public static void main(String args[]) throws RemoteException {
 
     if (args.length < 2) {
@@ -46,6 +60,7 @@ public class MUDClient {
 
       serv = (MUDServerInterface) Naming.lookup(regURL);
 
+      // prepare the initial MUDs
       serv.initialize();
 
       // set up the game
@@ -60,19 +75,16 @@ public class MUDClient {
       }
       System.out.println("Nice to meet you, " + playerName);
       System.out.println();
+      System.out.println("Let's begin");
 
       displayAvailableMUDs();
 
       joinMUD();
 
-      System.out.println();
-      System.out.println("Let's begin");
       running = true;
       currentLocation = serv.getStartLocation();
 
       displayOptions();
-
-      System.out.println(serv.getCurrentLocationInfo(currentLocation));
 
       runGame();
 
@@ -85,10 +97,12 @@ public class MUDClient {
     }
   }
 
+  // runs the whole game, while 'running' variable is true
+  // gets the player's input and displays the output
   private static void runGame() throws RemoteException {
 
     while (running) try {
-
+      System.out.println();
       System.out.print(">> ");
       String playerInput = in.readLine().toLowerCase();
       handlePlayerInput(playerInput);
@@ -104,6 +118,7 @@ public class MUDClient {
 
     // move the user in a given direction
     if (playerInput.contains("move")) {
+
       // get the direction where the player wants to move
       String[] directionString = playerInput.split(" ");
 
@@ -121,8 +136,10 @@ public class MUDClient {
 
     // pick up an item
     if (playerInput.contains("pick")) {
+
       // get the name of the item that the player wants to pick up
       String[] itemString = playerInput.split(" ");
+
       // pick up the item and notify the user about it
       serv.pickUpItem(currentLocation, itemString[1]);
       inventory.add(itemString[1]);
@@ -131,6 +148,7 @@ public class MUDClient {
 
     // drop an item
     if (playerInput.contains("drop")) {
+
       // get the name of the item that the player wants to drop
       String[] itemString = playerInput.split(" ");
       serv.dropItem(currentLocation, itemString[1]);
@@ -140,9 +158,13 @@ public class MUDClient {
 
     // display the contents of player's inventory
     if (playerInput.equals("inventory")) {
+
+      // if there isn't any items, inform the player that the inventory is empty
       if (inventory.size() < 1) {
         System.out.println("Your inventory is empty.");
       } else {
+
+        //otherwise, list all the items
         System.out.println("You are carrying:");
         for (String item : inventory) {
           System.out.println("* " + item);
@@ -158,13 +180,23 @@ public class MUDClient {
 
     // display the list of players currently playing in the same MUD"
     if (playerInput.equals("players")) {
-      System.out.println("Currently, these players are playing in this MUD: ");
-      System.out.println();
+
+      // get the list of all players in the MUD
       String[] currentPlayers = serv.getCurrentPlayersInMUD();
-      for (String name : currentPlayers) {
-        System.out.println("* " + name);
+
+      // check if the player is the only player in the MUD and inform them about it
+      if (currentPlayers.length < 2) {
+        System.out.println("You're the only player in this MUD.");
+      } else {
+
+        // otherwise, list all the players
+        System.out.println("Currently, these players are playing in this MUD: ");
+        System.out.println();
+
+        for (String name : currentPlayers) {
+          System.out.println("* " + name);
+        }
       }
-      System.out.println();
     }
 
     // print the available commands to the player
@@ -208,7 +240,7 @@ public class MUDClient {
     // allow the player to change the number of maximum MUDs in real time
     if (playerInput.equals("changemaxmuds")) {
       Integer maxNumberOfMUDs = serv.getMaxNumberOfMuds();
-      System.out.println("Currently, the maximum number of MUDs is " + maxNumberOfMUDs + ", and there are " + serv.getMUDCount + " MUDs running.");
+      System.out.println("Currently, the maximum number of MUDs is " + maxNumberOfMUDs + ", and there are " + serv.getMUDCount() + " MUDs running.");
       System.out.println("Enter the new maximum number of MUDs (remember, it cannot be lower than the current number of MUDs running):");
 
       try {
@@ -217,6 +249,8 @@ public class MUDClient {
         Integer newMaxMUDs = Integer.parseInt(input);
         System.out.println();
 
+        // check if the player's chosen maximum number is not smaller than
+        // the current number of MUDs running
         if (newMaxMUDs.compareTo(serv.getMUDCount()) >= 0) {
           serv.setNewMaxNumberOfMUDs(newMaxMUDs);
           System.out.println("The new maximum number of MUDs is " + newMaxMUDs);
@@ -233,6 +267,7 @@ public class MUDClient {
     }
   }
 
+  // displays all possible command options to the player
   private static void displayOptions() {
     System.out.println();
     System.out.println("You can choose from one of these commands:");
@@ -251,6 +286,7 @@ public class MUDClient {
     System.out.println("* Exit  - exit the game");
   }
 
+  // displays all currently available MUDs to the player
   private static void displayAvailableMUDs() throws RemoteException {
     Integer mudCount = serv.getMUDCount();
     System.out.println("Currently, there are " + mudCount + " MUDs are available: ");
@@ -262,6 +298,7 @@ public class MUDClient {
     System.out.println();
   }
 
+  // allows the player to join one of the existing MUDs
   private static void joinMUD() throws RemoteException {
     // get the name of the MUD that the player wishes to join
     System.out.println("Which MUD would you like to join?");
@@ -310,7 +347,10 @@ public class MUDClient {
     }
   }
 
+  // allow the player to create a new MUD in real time
   private static void createNewMUD(String mudName) throws RemoteException {
+
+    // check if the maximum number of MUDs available has not been exceeded
     if(serv.createNewMUD(mudName)) {
       System.out.println("Your MUD " + mudName + " has been created.");
     } else {

@@ -1,9 +1,16 @@
-package cs3524.solutions.mud;
+package mud;
 
 import java.rmi.Naming;
 import java.lang.SecurityManager;
 import java.rmi.server.UnicastRemoteObject;
 import java.net.InetAddress;
+
+/*
+  MUD game made by Dovydas Pekus, University of Aberdeen
+
+  The code for ServerMainline taken from the RMIShout practical of the course
+*/
+
 
 public class MUDServerMainline {
 
