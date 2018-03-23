@@ -210,6 +210,13 @@ public class MUDClient {
 
     // exit the game
     if (playerInput.equals("exit")) {
+
+      // drop all the items that the player was carrying
+      for (String item : inventory) {
+        serv.dropItem(currentLocation, item);
+      }
+      inventory.clear();
+      
       serv.exit(playerName);
       running = false;
     }
